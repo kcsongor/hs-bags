@@ -58,7 +58,7 @@ class (Form form,
     :: form
     -> ValidLookupResult (KeyValue (FormFields form) fk)
     -> UncurryF Maybe
-        (KeysValues (FormContextuals form) (ContextualKeys form fk)) [Question]
+        (KeysValues (FormContextuals form) (ContextualKeys form fk)) Question
 
 render
   :: forall fks form.
@@ -75,9 +75,11 @@ render form fs cs
   where
     h :: forall fk. FormField form fk => Proxy (fk :: Key) -> [Question]
     h _
-      = curryHListF (toFormField @_ @fk form r) (lookupAll @(ContextualKeys form fk) cs)
-      where
-        r = fromMaybe MissingKey (lookup @fk fs)
+      = case lookup @fk fs of
+          Nothing ->
+            []
+          Just r ->
+            [curryHListF (toFormField @_ @fk form r) (lookupAll @(ContextualKeys form fk) cs)]
 
 newtype QuestionKey
   = QuestionKey { _questionKeyString :: String }

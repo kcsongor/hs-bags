@@ -28,6 +28,7 @@ module Assocs
   ) where
 
 import All
+import HList
 
 import           Data.Kind
 import qualified Data.Text     as Tx
@@ -52,8 +53,9 @@ type family Snd (t :: (a, b)) :: b where
   Snd '(a, b)
     = b
 
-class All (HasKey' as) ks
-  =>  HasKeys' (as :: [Assoc value]) (ks :: [Key]) where
+class (All (HasKey' as) ks,
+       Arguments (KeysValues as ks))
+    => HasKeys' (as :: [Assoc value]) (ks :: [Key]) where
 
   type KeysValues as ks :: [value]
 
@@ -61,6 +63,7 @@ instance (LookupAll as ks ~ maybeVs,
           maybeVs ~ 'Just vs,
           All (HasKey' as) ks,
           All Typeable vs,
+          Arguments vs,
           ErrorWhenNoValues as ks maybeVs)
 
       =>  HasKeys' (as :: [Assoc value]) (ks :: [Key]) where

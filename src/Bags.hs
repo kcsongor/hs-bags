@@ -26,30 +26,28 @@ import Validation as Exports
 import Data.Aeson hiding (Result(..))
 
 type PersonFields
-  = '[ '("Name",     Name)
-     , '("Age",      Age)
-     , '("Pet/Name", Name)
-     , '("Pet/Age",  Age)
+  = '[ "Name"     :-> Name
+     , "Age"      :-> Age
+     , "Pet/Name" :-> Name
+     , "Pet/Age"  :-> Age
      ]
 
 type PersonContextuals
   = '[ '("NameAge", Either String String)
      ]
 
+type (:->) = '(,)
+
 type PersonGroups
-  = '[ '( "PersonalDetails"
-        , '[ "Name"
-           , "Age"
-           ]
+  = '[ "PersonalDetails" :->
+       '[ "Name"
+        , "Age"
+        ]
 
-        )
-
-     , '( "PetDetails"
-        , '[ "Pet/Name"
-           , "Pet/Age"
-           ]
-
-        )
+     , "PetDetails" :->
+        '[ "Pet/Name"
+         , "Pet/Age"
+         ]
 
      ]
 
